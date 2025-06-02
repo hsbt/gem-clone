@@ -17,7 +17,9 @@ gem install rubygems-clone-0.1.0.gem
 
 ## Prerequisites
 
-This plugin requires `ghq` to be installed and available in your PATH.
+This plugin works best with `ghq` but will automatically fall back to `git clone` if `ghq` is not available.
+
+### Recommended: Install ghq
 
 ```bash
 # Install ghq (example for macOS)
@@ -26,6 +28,10 @@ brew install ghq
 # Or install via Go
 go install github.com/x-motemen/ghq@latest
 ```
+
+### Fallback: Git only
+
+If `ghq` is not installed, the plugin will automatically use `git clone` instead. Make sure `git` is available in your PATH.
 
 ## Usage
 
@@ -47,7 +53,10 @@ The command will:
    - `source_code_uri` metadata
    - `homepage_uri` (if it looks like a repository URL)
    - `project_uri` (if it looks like a repository URL)
-3. Use `ghq get` to clone the repository (unless `--show-url` is specified)
+3. Clone the repository using:
+   - `ghq get` (preferred method if available)
+   - `git clone` (fallback if ghq is not available)
+   - Skip cloning if `--show-url` is specified
 
 ## Options
 
@@ -57,16 +66,27 @@ The command will:
 ## Examples
 
 ```bash
+# With ghq available
 $ gem clone sinatra
 Executing: ghq get https://github.com/sinatra/sinatra
 Successfully cloned repository: https://github.com/sinatra/sinatra
 
+# With verbose output
 $ gem clone rails --verbose
 Fetching gem metadata for 'rails'...
 Found repository URL: https://github.com/rails/rails
 Executing: ghq get https://github.com/rails/rails
 Successfully cloned repository: https://github.com/rails/rails
 
+# Fallback to git clone when ghq is not available
+$ gem clone rails --verbose
+Fetching gem metadata for 'rails'...
+Found repository URL: https://github.com/rails/rails
+ghq not found, falling back to git clone
+Executing: git clone https://github.com/rails/rails
+Successfully cloned repository: https://github.com/rails/rails
+
+# Show URL only
 $ gem clone rails --show-url
 https://github.com/rails/rails
 ```

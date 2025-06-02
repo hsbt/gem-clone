@@ -58,4 +58,12 @@ class CloneCommandTest < Minitest::Test
     @command.handle_options(['-v'])
     assert @command.options.has_key?(:verbose)
   end
+
+  def test_command_available_with_existing_command
+    assert @command.send(:command_available?, 'git')
+  end
+
+  def test_command_available_with_nonexistent_command
+    refute @command.send(:command_available?, 'nonexistent_command_12345')
+  end
 end

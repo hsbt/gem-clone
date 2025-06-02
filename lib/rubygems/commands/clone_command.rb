@@ -1,5 +1,4 @@
 require 'rubygems/command'
-require 'rubygems/remote_fetcher'
 require 'json'
 require 'net/http'
 require 'uri'
@@ -108,6 +107,23 @@ Examples:
   end
 
   def clone_repository(url)
+    if command_available?('ghq')
+      clone_with_ghq(url)
+    elsif command_available?('git')
+      clone_with_git(url)
+    else
+      alert_error "Neither 'ghq' nor 'git' is available in your PATH. Please install one of them."
+      terminate_interaction 1
+    end
+  end
+
+  private
+
+  def command_available?(command)
+    system("which #{command} > /dev/null 2>&1")
+  end
+
+  def clone_with_ghq(url)
     command = "ghq get #{url}"
     say "Executing: #{command}" if options[:verbose]
 
@@ -116,7 +132,22 @@ Examples:
     if $?.success?
       say "Successfully cloned repository: #{url}"
     else
-      alert_error "Failed to clone repository. Make sure 'ghq' is installed and available in your PATH."
+      alert_error "Failed to clone repository with ghq."
+      terminate_interaction 1
+    end
+  end
+
+  def clone_with_git(url)
+    command = "git clone #{url}"
+    say "ghq not found, falling back to git clone" if options[:verbose]
+    say "Executing: #{command}" if options[:verbose]
+
+    system(command)
+
+    if $?.success?
+      say "Successfully cloned repository: #{url}"
+    else
+      alert_error "Failed to clone repository with git."
       terminate_interaction 1
     end
   end
