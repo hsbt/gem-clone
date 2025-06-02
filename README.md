@@ -5,14 +5,14 @@ A RubyGems plugin that allows you to clone gem repositories using `ghq` based on
 ## Installation
 
 ```bash
-gem install rubygems-clone
+gem install gem-clone
 ```
 
 Or build and install locally:
 
 ```bash
-gem build rubygems-clone.gemspec
-gem install rubygems-clone-0.1.0.gem
+gem build gem-clone.gemspec
+gem install gem-clone-0.1.0.gem
 ```
 
 ## Prerequisites
@@ -96,8 +96,8 @@ https://github.com/rails/rails
 After checking out the repo, run tests and build the gem:
 
 ```bash
-gem build rubygems-clone.gemspec
-gem install rubygems-clone-0.1.0.gem
+gem build gem-clone.gemspec
+gem install gem-clone-0.1.0.gem
 ```
 
 ## License
