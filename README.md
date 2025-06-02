@@ -52,7 +52,6 @@ The command will:
 2. Extract repository URL from:
    - `source_code_uri` metadata
    - `homepage_uri` (if it looks like a repository URL)
-   - `project_uri` (if it looks like a repository URL)
 3. Clone the repository using:
    - `ghq get` (preferred method if available)
    - `git clone` (fallback if ghq is not available)
