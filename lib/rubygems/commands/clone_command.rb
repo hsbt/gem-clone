@@ -74,11 +74,11 @@ Examples:
 
   def extract_repository_url(gem_info)
     if gem_info['source_code_uri'] && !gem_info['source_code_uri'].empty?
-      return gem_info['source_code_uri']
+      return normalize_repository_url(gem_info['source_code_uri'])
     end
 
     if gem_info['homepage_uri'] && is_repository_url?(gem_info['homepage_uri'])
-      return gem_info['homepage_uri']
+      return normalize_repository_url(gem_info['homepage_uri'])
     end
 
     nil
@@ -88,6 +88,14 @@ Examples:
     return false if url.nil? || url.empty?
 
     url.match?(/github\.com|gitlab\.com|bitbucket\.org|codeberg\.org|sourcehut\.org/)
+  end
+
+  def normalize_repository_url(url)
+    return url if url.nil? || url.empty?
+
+    normalized_url = url.gsub(%r{/(tree|blob|commits|releases|issues|pull|tags|branches)/.*$}, '')
+
+    normalized_url.chomp('/')
   end
 
   def clone_repository(url)
