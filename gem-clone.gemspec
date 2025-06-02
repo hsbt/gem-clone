@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.name          = "gem-clone"
   spec.version       = "0.1.0"
-  spec.authors       = ["hsbt"]
+  spec.authors       = ["Hiroshi SHIBATA"]
   spec.email         = ["hsbt@ruby-lang.org"]
 
   spec.summary       = "A RubyGems plugin to clone gem repositories"
