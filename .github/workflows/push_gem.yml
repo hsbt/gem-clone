@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   push:
-    if: github.repository == 'ruby/gem-clone'
+    if: github.repository == 'hsbt/gem-clone'
     runs-on: ubuntu-latest
 
     environment:
