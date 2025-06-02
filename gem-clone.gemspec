@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "gem-clone"
-  spec.version       = "0.4.0"
+  spec.version       = "0.4.1"
   spec.authors       = ["Hiroshi SHIBATA"]
   spec.email         = ["hsbt@ruby-lang.org"]
 
