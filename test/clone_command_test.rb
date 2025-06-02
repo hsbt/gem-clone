@@ -60,10 +60,10 @@ class CloneCommandTest < Minitest::Test
   end
 
   def test_command_available_with_existing_command
-    assert @command.send(:command_available?, 'git')
+    assert @command.send(:command_available?, 'ruby')
   end
 
   def test_command_available_with_nonexistent_command
-    refute @command.send(:command_available?, 'nonexistent_command_12345')
+    refute @command.send(:command_available?, 'nonexistent_command_xyz_12345')
   end
 end

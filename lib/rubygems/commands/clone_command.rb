@@ -2,6 +2,7 @@ require 'rubygems/command'
 require 'json'
 require 'net/http'
 require 'uri'
+require 'open3'
 
 class Gem::Commands::CloneCommand < Gem::Command
   def initialize
@@ -120,7 +121,13 @@ Examples:
   private
 
   def command_available?(command)
-    system("which #{command} > /dev/null 2>&1")
+    begin
+      check_command = RUBY_PLATFORM =~ /mswin|mingw|cygwin/ ? 'where' : 'which'
+      _, _, status = Open3.capture3("#{check_command} #{command}")
+      status.success?
+    rescue
+      false
+    end
   end
 
   def clone_with_ghq(url)
