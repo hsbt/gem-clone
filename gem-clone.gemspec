@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "A RubyGems plugin to clone gem repositories"
   spec.description   = "Clone gem repositories by fetching source code URLs from gem metadata"
-  spec.homepage      = "https://github.com/hsbt/hsbt/tree/main/labs/gem-clone"
+  spec.homepage      = "https://github.com/hsbt/gem-clone"
   spec.license       = "MIT"
 
   spec.files         = Dir.glob("lib/**/*") + %w[README.md]
