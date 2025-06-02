@@ -9,7 +9,11 @@ class Gem::Commands::CloneCommand < Gem::Command
     super 'clone', 'Clone a gem repository using ghq'
 
     add_option('-v', '--verbose', 'Show verbose output') do |value, options|
-      options[:verbose] = value
+      options[:verbose] = true
+    end
+
+    add_option('-u', '--show-url', 'Show repository URL without cloning') do |value, options|
+      options[:show_url] = true
     end
   end
 
@@ -26,6 +30,7 @@ source_code_uri from the gem's metadata.
 Examples:
   gem clone sinatra
   gem clone rails --verbose
+  gem clone rails --show-url
     EOF
   end
 
@@ -50,7 +55,11 @@ Examples:
 
     say "Found repository URL: #{repository_url}" if options[:verbose]
 
-    clone_repository(repository_url)
+    if options[:show_url]
+      say repository_url
+    else
+      clone_repository(repository_url)
+    end
   end
 
   private

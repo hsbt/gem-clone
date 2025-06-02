@@ -35,6 +35,9 @@ gem clone sinatra
 
 # Clone with verbose output
 gem clone rails --verbose
+
+# Show repository URL without cloning
+gem clone rails --show-url
 ```
 
 The command will:
@@ -44,7 +47,12 @@ The command will:
    - `source_code_uri` metadata
    - `homepage_uri` (if it looks like a repository URL)
    - `project_uri` (if it looks like a repository URL)
-3. Use `ghq get` to clone the repository
+3. Use `ghq get` to clone the repository (unless `--show-url` is specified)
+
+## Options
+
+- `-v, --verbose`: Show verbose output during execution
+- `-u, --show-url`: Display the repository URL without executing the clone operation
 
 ## Examples
 
@@ -58,6 +66,9 @@ Fetching gem metadata for 'rails'...
 Found repository URL: https://github.com/rails/rails
 Executing: ghq get https://github.com/rails/rails
 Successfully cloned repository: https://github.com/rails/rails
+
+$ gem clone rails --show-url
+https://github.com/rails/rails
 ```
 
 ## Development

@@ -19,39 +19,43 @@ class CloneCommandTest < Minitest::Test
   end
 
   def test_normalize_repository_url_with_tree_path
-    # /tree/ パスを削除することをテスト
     url = "https://github.com/rails/rails/tree/v8.0.2"
     expected = "https://github.com/rails/rails"
     assert_equal expected, @command.send(:normalize_repository_url, url)
   end
 
   def test_normalize_repository_url_with_blob_path
-    # /blob/ パスを削除することをテスト
     url = "https://github.com/user/repo/blob/main/README.md"
     expected = "https://github.com/user/repo"
     assert_equal expected, @command.send(:normalize_repository_url, url)
   end
 
   def test_normalize_repository_url_with_clean_url
-    # 既にクリーンなURLはそのまま返すことをテスト
     url = "https://github.com/user/repo"
     assert_equal url, @command.send(:normalize_repository_url, url)
   end
 
   def test_normalize_repository_url_with_trailing_slash
-    # 末尾のスラッシュを削除することをテスト
     url = "https://github.com/user/repo/"
     expected = "https://github.com/user/repo"
     assert_equal expected, @command.send(:normalize_repository_url, url)
   end
 
   def test_normalize_repository_url_with_nil
-    # nilの場合の処理をテスト
     assert_nil @command.send(:normalize_repository_url, nil)
   end
 
   def test_normalize_repository_url_with_empty_string
-    # 空文字列の場合の処理をテスト
     assert_equal "", @command.send(:normalize_repository_url, "")
+  end
+
+  def test_show_url_option_parsing
+    @command.handle_options(['--show-url'])
+    assert @command.options[:show_url]
+  end
+
+  def test_verbose_option_parsing
+    @command.handle_options(['-v'])
+    assert @command.options.has_key?(:verbose)
   end
 end
