@@ -42,7 +42,7 @@ $ gem clone rails --verbose
 Fetching gem metadata for 'rails'...
 Found repository URL: https://github.com/rails/rails
 ghq not found, falling back to git clone
-Executing: git clone https://github.com/rails/rails rails
+Executing: git clone https://github.com/rails/rails
 Successfully cloned repository: https://github.com/rails/rails
 
 # Show URL only
@@ -101,7 +101,7 @@ The plugin performs the following steps:
 3. **Normalize URL** by removing version-specific paths (e.g., `/tree/v1.0.0`, `/blob/main/README.md`)
 4. **Clone repository** using:
    - `ghq get <url>` (preferred method if available)
-   - `git clone <url> <repo_name>` (fallback if ghq is not available)
+   - `git clone <url>` (fallback if ghq is not available)
    - Display URL only if `--show-url` option is specified
 
 ### URL Normalization
