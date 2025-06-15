@@ -7,7 +7,7 @@ class CloneCommandTest < Minitest::Test
 
   def test_initialize
     assert_equal 'clone', @command.command
-    assert_equal 'Clone a gem repository using ghq', @command.summary
+    assert_equal 'Clone a gem repository using git goget, ghq, or git', @command.summary
   end
 
   def test_arguments

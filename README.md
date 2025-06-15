@@ -1,6 +1,6 @@
 # gem-clone
 
-A RubyGems plugin that allows you to clone gem repositories by fetching source code URLs from gem metadata and using `ghq` or `git clone`.
+A RubyGems plugin that allows you to clone gem repositories by fetching source code URLs from gem metadata and using `git goget`, `ghq`, or `git clone`.
 
 ## Usage
 
@@ -25,19 +25,20 @@ gem clone rails --show-url
 ### Examples
 
 ```bash
-# With ghq available
+# With git goget available (preferred)
 $ gem clone sinatra
-Executing: ghq get https://github.com/sinatra/sinatra
+Executing: git goget https://github.com/sinatra/sinatra
 Successfully cloned repository: https://github.com/sinatra/sinatra
 
-# With verbose output
+# Fallback to ghq when git goget is not available
 $ gem clone rails --verbose
 Fetching gem metadata for 'rails'...
 Found repository URL: https://github.com/rails/rails
+git goget not found, falling back to ghq
 Executing: ghq get https://github.com/rails/rails
 Successfully cloned repository: https://github.com/rails/rails
 
-# Fallback to git clone when ghq is not available
+# Fallback to git clone when neither git goget nor ghq is available
 $ gem clone rails --verbose
 Fetching gem metadata for 'rails'...
 Found repository URL: https://github.com/rails/rails
@@ -69,9 +70,27 @@ gem install gem-clone-*.gem
 
 ### Prerequisites
 
-This plugin works best with `ghq` but will automatically fall back to `git clone` if `ghq` is not available.
+This plugin works best with `git goget` but will automatically fall back to `ghq` or `git clone` if `git goget` is not available.
 
-#### Recommended: Install ghq
+#### Recommended: Install git goget
+
+[git goget](https://github.com/hsbt/git-goget) is a bash script for cloning Git repositories with additional features.
+
+```bash
+# Install git goget from GitHub
+git clone https://github.com/hsbt/git-goget.git
+cd git-goget
+chmod +x git-goget
+# Copy to a directory in your PATH
+cp git-goget /usr/local/bin/
+
+# Or download directly
+curl -o git-goget https://raw.githubusercontent.com/hsbt/git-goget/main/git-goget
+chmod +x git-goget
+cp git-goget /usr/local/bin/
+```
+
+#### Alternative: Install ghq
 
 ```bash
 # Install ghq (example for macOS)
@@ -86,7 +105,7 @@ go install github.com/x-motemen/ghq@latest
 
 #### Fallback: Git only
 
-If `ghq` is not installed, the plugin will automatically use `git clone` instead. Make sure `git` is available in your PATH.
+If neither `git goget` nor `ghq` is installed, the plugin will automatically use `git clone` instead. Make sure `git` is available in your PATH.
 
 ## Technical Details
 
@@ -100,8 +119,9 @@ The plugin performs the following steps:
    - `homepage_uri` (if it looks like a repository URL)
 3. **Normalize URL** by removing version-specific paths (e.g., `/tree/v1.0.0`, `/blob/main/README.md`)
 4. **Clone repository** using:
-   - `ghq get <url>` (preferred method if available)
-   - `git clone <url>` (fallback if ghq is not available)
+   - `git goget <url>` (preferred method if available)
+   - `ghq get <url>` (fallback if git goget is not available)
+   - `git clone <url>` (fallback if neither git goget nor ghq is available)
    - Display URL only if `--show-url` option is specified
 
 ### URL Normalization
@@ -142,7 +162,7 @@ The plugin recognizes repository URLs from:
 
 - Ruby >= 2.7.0
 - RubyGems
-- `ghq` (recommended) or `git` (fallback)
+- `git goget` (recommended), `ghq` (alternative), or `git` (fallback)
 
 ## Development
 

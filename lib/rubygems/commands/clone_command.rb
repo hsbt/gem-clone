@@ -6,7 +6,7 @@ require 'open3'
 
 class Gem::Commands::CloneCommand < Gem::Command
   def initialize
-    super 'clone', 'Clone a gem repository using ghq'
+    super 'clone', 'Clone a gem repository using git goget, ghq, or git'
 
     add_option('-v', '--verbose', 'Show verbose output') do |value, options|
       options[:verbose] = true
@@ -24,8 +24,8 @@ class Gem::Commands::CloneCommand < Gem::Command
   def description # :nodoc:
     <<-EOF
 The clone command fetches gem metadata from RubyGems.org and clones
-the gem's source repository using ghq based on the homepage or
-source_code_uri from the gem's metadata.
+the gem's source repository using git goget (preferred), ghq, or git
+based on the homepage or source_code_uri from the gem's metadata.
 
 Examples:
   gem clone sinatra
@@ -108,12 +108,14 @@ Examples:
   end
 
   def clone_repository(url)
-    if command_available?('ghq')
+    if command_available?('git-goget')
+      clone_with_git_goget(url)
+    elsif command_available?('ghq')
       clone_with_ghq(url)
     elsif command_available?('git')
       clone_with_git(url)
     else
-      alert_error "Neither 'ghq' nor 'git' is available in your PATH. Please install one of them."
+      alert_error "None of 'git goget', 'ghq', or 'git' is available in your PATH. Please install one of them."
       terminate_interaction 1
     end
   end
@@ -130,8 +132,23 @@ Examples:
     end
   end
 
+  def clone_with_git_goget(url)
+    command = "git goget #{url}"
+    say "Executing: #{command}" if options[:verbose]
+
+    system(command)
+
+    if $?.success?
+      say "Successfully cloned repository: #{url}"
+    else
+      alert_error "Failed to clone repository with git goget."
+      terminate_interaction 1
+    end
+  end
+
   def clone_with_ghq(url)
     command = "ghq get #{url}"
+    say "git goget not found, falling back to ghq" if options[:verbose]
     say "Executing: #{command}" if options[:verbose]
 
     system(command)
