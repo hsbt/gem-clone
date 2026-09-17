@@ -131,6 +131,16 @@ class CloneCommandTest < Minitest::Test
     assert_equal 1, status
   end
 
+  def test_clone_with_git_goget_keeps_a_checkout_that_holds_local_work
+    url = "https://github.com/grpc/grpc"
+    command = RecordingCloneCommand.new(4)
+
+    _, err, status = with_captured_ui { command.send(:clone_with_git_goget, url) }
+
+    assert_includes err, "Left the existing checkout alone: #{url}"
+    assert_nil status
+  end
+
   def test_clone_with_git_goget_reports_a_failure
     command = RecordingCloneCommand.new(1)
 

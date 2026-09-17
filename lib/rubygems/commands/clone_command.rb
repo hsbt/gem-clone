@@ -5,8 +5,9 @@ require 'uri'
 require 'open3'
 
 class Gem::Commands::CloneCommand < Gem::Command
-  # git goget answers with this when the repository cannot be reached at all.
-  GOGET_SKIPPED = 3
+  # git goget answers with these for a repository it deliberately left alone.
+  GOGET_UNREACHABLE = 3
+  GOGET_LOCAL_WORK = 4
 
   def initialize
     super 'clone', 'Clone a gem repository using git goget, ghq, or git'
@@ -145,9 +146,11 @@ Examples:
     case $?.exitstatus
     when 0
       say "Successfully cloned repository: #{url}"
-    when GOGET_SKIPPED
+    when GOGET_UNREACHABLE
       alert_error "Repository is unreachable: #{url}"
       terminate_interaction 1
+    when GOGET_LOCAL_WORK
+      alert_warning "Left the existing checkout alone: #{url}"
     else
       alert_error "Failed to clone repository with git goget."
       terminate_interaction 1
