@@ -102,9 +102,11 @@ Examples:
   def normalize_repository_url(url)
     return url if url.nil? || url.empty?
 
-    normalized_url = url.gsub(%r{/(tree|blob|commits|releases|issues|pull|tags|branches)/.*$}, '')
+    normalized_url = url.sub(/[#?].*/m, '')
+    normalized_url = normalized_url.sub(%r{\Ahttp://}, 'https://').sub(%r{\Ahttps://www\.}, 'https://')
+    normalized_url = normalized_url.gsub(%r{/(tree|blob|commits|releases|issues|pull|tags|branches)/.*$}, '')
 
-    normalized_url.chomp('/')
+    normalized_url.chomp('/').sub(/\.git\z/, '')
   end
 
   def clone_repository(url)

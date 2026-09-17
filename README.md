@@ -126,7 +126,7 @@ The plugin performs the following steps:
 
 ### URL Normalization
 
-The plugin automatically normalizes repository URLs by removing common Git hosting service paths:
+Gem metadata names the same repository in many shapes, so the plugin folds them to one before cloning. Common Git hosting service paths are removed:
 
 - `/tree/*` → removed (GitHub, GitLab branches/tags)
 - `/blob/*` → removed (GitHub, GitLab file views)
@@ -137,8 +137,16 @@ The plugin automatically normalizes repository URLs by removing common Git hosti
 - `/tags/*` → removed (tag pages)
 - `/branches/*` → removed (branch pages)
 
-**Example:**
+So is anything else that does not name the repository itself:
+
+- `#fragment` and `?query` → removed
+- `http://` → `https://`
+- `https://www.` → `https://`
+- trailing `/` and `.git` → removed
+
+**Examples:**
 - `https://github.com/rails/rails/tree/v8.0.2` → `https://github.com/rails/rails`
+- `http://www.github.com/rails/rails.git` → `https://github.com/rails/rails`
 
 ### Cross-platform Support
 

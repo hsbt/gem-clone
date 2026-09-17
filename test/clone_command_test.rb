@@ -57,6 +57,30 @@ class CloneCommandTest < Minitest::Test
     assert_equal expected, @command.send(:normalize_repository_url, url)
   end
 
+  def test_normalize_repository_url_with_fragment
+    url = "https://github.com/cucumber/messages#readme"
+    expected = "https://github.com/cucumber/messages"
+    assert_equal expected, @command.send(:normalize_repository_url, url)
+  end
+
+  def test_normalize_repository_url_with_query
+    url = "https://github.com/user/repo?tab=readme-ov-file"
+    expected = "https://github.com/user/repo"
+    assert_equal expected, @command.send(:normalize_repository_url, url)
+  end
+
+  def test_normalize_repository_url_with_git_suffix
+    url = "https://github.com/ioquatix/bake.git"
+    expected = "https://github.com/ioquatix/bake"
+    assert_equal expected, @command.send(:normalize_repository_url, url)
+  end
+
+  def test_normalize_repository_url_with_www_and_http
+    url = "http://www.github.com/instructure/soap4r-middleware"
+    expected = "https://github.com/instructure/soap4r-middleware"
+    assert_equal expected, @command.send(:normalize_repository_url, url)
+  end
+
   def test_normalize_repository_url_with_nil
     assert_nil @command.send(:normalize_repository_url, nil)
   end
