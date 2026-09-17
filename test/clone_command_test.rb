@@ -121,6 +121,27 @@ class CloneCommandTest < Minitest::Test
     end
   end
 
+  def test_clone_with_git_goget_reports_an_unreachable_repository
+    url = "https://github.com/gone/repo"
+    command = RecordingCloneCommand.new(3)
+
+    _, err = with_captured_ui do
+      assert_raises(Gem::SystemExitException) { command.send(:clone_with_git_goget, url) }
+    end
+
+    assert_includes err, "Repository is unreachable: #{url}"
+  end
+
+  def test_clone_with_git_goget_reports_a_failure
+    command = RecordingCloneCommand.new(1)
+
+    _, err = with_captured_ui do
+      assert_raises(Gem::SystemExitException) { command.send(:clone_with_git_goget, "https://github.com/user/repo") }
+    end
+
+    assert_includes err, "Failed to clone repository with git goget."
+  end
+
   def with_captured_ui
     out, err = StringIO.new, StringIO.new
     previous_ui = Gem::DefaultUserInteraction.ui
