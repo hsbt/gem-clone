@@ -133,10 +133,9 @@ Examples:
   end
 
   def clone_with_git_goget(url)
-    command = "git goget #{url}"
-    say "Executing: #{command}" if options[:verbose]
+    say "Executing: git goget #{url}" if options[:verbose]
 
-    system(command)
+    system("git", "goget", url)
 
     if $?.success?
       say "Successfully cloned repository: #{url}"
@@ -147,11 +146,10 @@ Examples:
   end
 
   def clone_with_ghq(url)
-    command = "ghq get #{url}"
     say "git goget not found, falling back to ghq" if options[:verbose]
-    say "Executing: #{command}" if options[:verbose]
+    say "Executing: ghq get #{url}" if options[:verbose]
 
-    system(command)
+    system("ghq", "get", url)
 
     if $?.success?
       say "Successfully cloned repository: #{url}"
@@ -162,11 +160,10 @@ Examples:
   end
 
   def clone_with_git(url)
-    command = "git clone #{url}"
     say "ghq not found, falling back to git clone" if options[:verbose]
-    say "Executing: #{command}" if options[:verbose]
+    say "Executing: git clone #{url}" if options[:verbose]
 
-    system(command)
+    system("git", "clone", url)
 
     if $?.success?
       say "Successfully cloned repository: #{url}"

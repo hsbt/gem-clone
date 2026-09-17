@@ -1,6 +1,22 @@
 require 'test_helper'
+require 'stringio'
 
 class CloneCommandTest < Minitest::Test
+  class RecordingCloneCommand < Gem::Commands::CloneCommand
+    attr_reader :spawned
+
+    def initialize(exit_status)
+      super()
+      @exit_status = exit_status
+    end
+
+    def system(*args)
+      @spawned = args
+      # A real process, so $? carries a status. RUBYOPT is dropped to skip bundler.
+      super({ 'RUBYOPT' => nil }, RbConfig.ruby, '--disable-gems', '-e', "exit #{@exit_status}")
+    end
+  end
+
   def setup
     @command = Gem::Commands::CloneCommand.new
   end
@@ -65,5 +81,29 @@ class CloneCommandTest < Minitest::Test
 
   def test_command_available_with_nonexistent_command
     refute @command.send(:command_available?, 'nonexistent_command_xyz_12345')
+  end
+
+  def test_clone_runners_pass_the_url_as_a_single_argument
+    url = "https://github.com/user/repo; echo injected"
+
+    {
+      clone_with_git_goget: ["git", "goget", url],
+      clone_with_ghq: ["ghq", "get", url],
+      clone_with_git: ["git", "clone", url],
+    }.each do |runner, expected|
+      command = RecordingCloneCommand.new(0)
+      with_captured_ui { command.send(runner, url) }
+      assert_equal expected, command.spawned
+    end
+  end
+
+  def with_captured_ui
+    out, err = StringIO.new, StringIO.new
+    previous_ui = Gem::DefaultUserInteraction.ui
+    Gem::DefaultUserInteraction.ui = Gem::StreamUI.new(StringIO.new, out, err)
+    yield
+    [out.string, err.string]
+  ensure
+    Gem::DefaultUserInteraction.ui = previous_ui
   end
 end
