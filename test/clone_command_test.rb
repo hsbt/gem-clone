@@ -125,29 +125,32 @@ class CloneCommandTest < Minitest::Test
     url = "https://github.com/gone/repo"
     command = RecordingCloneCommand.new(3)
 
-    _, err = with_captured_ui do
-      assert_raises(Gem::SystemExitException) { command.send(:clone_with_git_goget, url) }
-    end
+    _, err, status = with_captured_ui { command.send(:clone_with_git_goget, url) }
 
     assert_includes err, "Repository is unreachable: #{url}"
+    assert_equal 1, status
   end
 
   def test_clone_with_git_goget_reports_a_failure
     command = RecordingCloneCommand.new(1)
 
-    _, err = with_captured_ui do
-      assert_raises(Gem::SystemExitException) { command.send(:clone_with_git_goget, "https://github.com/user/repo") }
-    end
+    _, err, status = with_captured_ui { command.send(:clone_with_git_goget, "https://github.com/user/repo") }
 
     assert_includes err, "Failed to clone repository with git goget."
+    assert_equal 1, status
   end
 
   def with_captured_ui
     out, err = StringIO.new, StringIO.new
     previous_ui = Gem::DefaultUserInteraction.ui
     Gem::DefaultUserInteraction.ui = Gem::StreamUI.new(StringIO.new, out, err)
-    yield
-    [out.string, err.string]
+    status = nil
+    begin
+      yield
+    rescue Gem::SystemExitException => e
+      status = e.exit_code
+    end
+    [out.string, err.string, status]
   ensure
     Gem::DefaultUserInteraction.ui = previous_ui
   end
